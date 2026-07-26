@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Ración de Engorde</title>
-    <!-- Enlace al archivo de estilos externos -->
+    <title>Pirates Resources Calculador</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,26 +13,30 @@
 	<div>
 		<div>
 			<label for="gold">Gold:</label>
-			<input type="number" name="gold" id="gold" value=63000000>
+			<input type="number" name="gold" id="gold" value="63000000">
 			<span id="gold-result"></span>
+			<span id="gold-error"></span>
 		</div>
 
 		<div>
 			<label for="food">Food:</label>
 			<input type="number" name="food" id="food" value="0">
 			<span id="food-result"></span>
+			<span id="food-error"></span>
 		</div>
 
 		<div>
 			<label for="wood">Wood:</label>
 			<input type="number" name="wood" id="wood" value="0">
 			<span id="wood-result"></span>
+			<span id="wood-error"></span>
 		</div>
 
 		<div>
 			<label for="silver">Silver:</label>
 			<input type="number" name="silver" id="silver" value="0">
 			<span id="silver-result"></span>
+			<span id="silver-error"></span>
 		</div>
 
 		<button id="button-calculate">Calculate</button>
