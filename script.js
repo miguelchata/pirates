@@ -1,83 +1,77 @@
+// ui.js
 const calcButton = document.getElementById("button-calculate");
 
-calcButton.addEventListener('click', clickHandler);
+calcButton.addEventListener('click', handleCalculateClick);
 
-const RESOURCES = Object.freeze({
-	food: { quantity: 30, price: 350, compressionRate: 1000},
-	wood: { quantity: 5, price: 350, compressionRate: 170},
-	silver: { quantity: 1.25, price: 350, compressionRate: 42},
-	gold: { quantity: 0, price: 0, compressionRate: 0 },
+const uiIds = Object.freeze({
+	food: {
+		input: 'food-input',
+		result: 'food-result',
+		error: 'food-error',
+	},
+	wood: {
+		input: 'wood-input',
+		result: 'wood-result',
+		error: 'wood-error',
+	},
+	silver: {
+		input: 'silver-input',
+		result: 'silver-result',
+		error: 'silver-error',
+	},
+	gold: {
+		input: 'gold-input',
+		result: 'gold-result',
+		error: 'gold-error',
+	},
 });
 
-const UI = collectUI();
+const ui = collectUI();
 
-function clickHandler() {
+function handleCalculateClick() {
 	clearUI();
 	const values = collectValues();
 
-	const { data, errors } = calculateResource(values);
+	const { data, errors } = calculateResources(values);
 
 	renderErrors(errors);
 	renderResults(data);
 }
 
 function collectUI() {
-	let elements = {};
+	const elements = {};
 
-	for (const key of Object.keys(RESOURCES)) {
-		elements[key] = document.getElementById(key);
-		elements[`${key}-result`] = document.getElementById(`${key}-result`);
-		elements[`${key}-error`] = document.getElementById(`${key}-error`);
+	for (const resource of Object.values(uiIds)) {
+		elements[resource.input] = document.getElementById(resource.input);
+		elements[resource.result] = document.getElementById(resource.result);
+		elements[resource.error] = document.getElementById(resource.error);
 	}
 
 	return elements;
 }
 
 function collectValues() {
-	let values = {};
+	const values = {};
 
-	for (let input of Object.keys(RESOURCES)) {
-		values[input] = UI[input].value;
+	for (const [key, value] of Object.entries(uiIds)) {
+		values[key] = Number(ui[value.input].value);
 	}
 
 	return values;
 }
 
-
-function calculateResource(values) {
-	let result = {
-		data: {},
-		errors: [],
-	};
-
-	for (const [key, value] of Object.entries(RESOURCES)) {
-		const inputValue = Number(values[key])
-
-		if (!Number.isNaN(inputValue) && Number.isFinite(inputValue) && inputValue > 0) {
-			const amount = inputValue * value.quantity;
-			const gold = inputValue * value.price;
-			const compress = convertToCompressed(amount, value.compressionRate); 
-
-			result.data[key] = { amount, gold, compress };
-		} else {
-			result.errors.push(key);
-		}
-
-	}
-
-	return result;
-}
-
 function clearUI() {
-	for (const key of Object.keys(RESOURCES)) {
-		UI[`${key}-result`].innerText = "";
-		UI[`${key}-error`].innerText = "";
+	for (const resource of Object.values(uiIds)) {
+		ui[resource.result].innerText = "";
+		ui[resource.error].innerText = "";
 	}
 }
 
 function renderErrors(errors) {
-	for (let error of errors ) {
-		UI[`${error}-error`].innerText = "Input should be a number and greater than zero!";
+	for (const error of errors ) {
+		const resource = uiIds[error];
+
+		ui[resource.error].innerText = "Input should be a number and greater than zero!";
 	}
 }
 
@@ -85,33 +79,83 @@ function renderResults(results) {
 	let totalGold = 0;
 
 	for (const [key, value] of Object.entries(results)) {
-		UI[`${key}-result`].innerText = `Amount: ${value.amount}M - Gold: ${convertBigNumber(value.gold)} Compressed: ${value.compress}`;
+		const resourceUI = uiIds[key];
+
+		ui[resourceUI.result].innerText = `Amount: ${value.amount}M - Gold: ${formatLargeNumber(value.gold)} Compressed: ${value.compress}`;
 		totalGold += value.gold;
 	}
 
-	UI[`gold-result`].innerText = `Total Gold: ${convertBigNumber(totalGold)}`;
+	ui[uiIds.gold.result].innerText = `Total Gold: ${formatLargeNumber(totalGold)}`;
 }
 
+function formatLargeNumber(gold) {
+	const goldThousand = gold % 1000;
+	const goldMillion = (gold - goldThousand) / 1000;
 
-function convertBigNumber(gold) {
-	let goldThousand = gold % 1000;
-	let goldMillion = (gold - goldThousand) / 1000;
+	if (goldMillion > 0 && goldThousand > 0) {
+		return `${goldMillion}M - ${goldThousand}K`;
+	}
 
-	let stringMillion = ''
-	let stringThousand = ''
+	if (goldMillion > 0) {
+		return `${goldMillion}M`;
+	}
 
-	if (goldMillion > 0) 
-		stringMillion += `${goldMillion}M`
+	if (goldThousand > 0) {
+		return `${goldThousand}K`;
+	}
 
-	if (goldThousand > 0)
-		stringThousand +=  `${goldThousand}K`
+	return "0";
+}
 
-	return `${stringMillion} - ${stringThousand}`
+// script.js
+const RESOURCES = Object.freeze({
+	food: {
+		quantity: 30,
+		price: 350,
+		compressionRate: 1000,
+	},
+	wood: {
+		quantity: 5,
+		price: 350,
+		compressionRate: 170,
+	},
+	silver: {
+		quantity: 1.25,
+		price: 350,
+		compressionRate: 42,
+	},
+});
+
+function calculateResources(values) {
+	const data = {};
+	const errors = [];
+
+	for (const [key, value] of Object.entries(RESOURCES)) {
+		const inputValue = values[key]
+
+		if (isValidResourceAmount(inputValue)) {
+			const amount = inputValue * value.quantity;
+			const gold = inputValue * value.price;
+			const compress = convertToCompressed(amount, value.compressionRate); 
+
+			data[key] = { amount, gold, compress };
+		} else {
+			errors.push(key);
+		}
+
+	}
+
+	return { data, errors };
 }
 
 function convertToCompressed(resource, rate) {
-	let resourceLeft = (resource * 1000) % rate;
-	let resourceCompressed = ((resource * 1000 ) - resourceLeft) / rate;
+	const resourceLeft = (resource * 1000) % rate;
+	const resourceCompressed = ((resource * 1000 ) - resourceLeft) / rate;
 
-	return `${resourceCompressed}units / ${resourceLeft}K`
+	return `${resourceCompressed} units / ${resourceLeft}K`
+}
+
+function isValidResourceAmount(amount) {
+
+	return (Number.isFinite(amount) && amount > 0);
 }
