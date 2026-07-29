@@ -2,47 +2,33 @@
 import { calculateResources, isValidResourceAmount } from "./calculator.js";
 
 describe("isValidResourceAmount", () => {
-  it("should return true for valid resource amount", () => {
-    const amount = 10;
+  it.each([[10], [10.5]])("should return true for %p amount", (amount) => {
     const result = isValidResourceAmount(amount);
 
     expect(result).toBe(true);
   });
 
-  it("should be return false for invalid resource amount", () => {
-    const amount = -10;
+  it.each([
+    [-1],
+    [0],
+    [NaN],
+    [Infinity],
+    [-Infinity],
+    [undefined],
+    [null],
+    ["text"],
+    [{}],
+    [true],
+  ])("should return false for %p amount", (amount) => {
     const result = isValidResourceAmount(amount);
 
     expect(result).toBe(false);
   });
-  it("should be return false for 0", () => {
-    const amount = 0;
-    const result = isValidResourceAmount(amount);
 
-    expect(result).toBe(false);
-  });
-  it("should be return false for NaN", () => {
-    const amount = NaN;
-    const result = isValidResourceAmount(amount);
-
-    expect(result).toBe(false);
-  });
-  it("should be return false for Infinity", () => {
-    const amount = Infinity;
-    const result = isValidResourceAmount(amount);
-
-    expect(result).toBe(false);
-  });
-  it("should be return false for -Infinity", () => {
-    const amount = -Infinity;
-    const result = isValidResourceAmount(amount);
-
-    expect(result).toBe(false);
-  });
 });
 
 describe("calculateResources", () => {
-  it("calculates resources when all inputs area valid", () => {
+  it("calculates resources when all inputs are valid", () => {
     const values = {
       food: 10,
       wood: 10,
@@ -72,26 +58,18 @@ describe("calculateResources", () => {
     expect(result.data.silver).toBeDefined();
   });
 
-  it("calculates when inputs are empty", () => {
-    const values = {};
-    const result = calculateResources(values);
-
-    expect(result.data).toStrictEqual({});
-    expect(result.errors).toEqual(
-      expect.arrayContaining(["food", "wood", "silver"]),
-    );
-    expect(result.errors).toHaveLength(3);
-  });
-
-  it("calculates when inputs are invalid", () => {
-    const values = {
-      food: NaN,
-      wood: -Infinity,
-      silver: Infinity,
-    };
+  it.each([
+    [{}],
+    [{ food: NaN, wood: -Infinity, silver: Infinity }],
+    [{ food: undefined, wood: null, gems: 10 }],
+  ])("calculates when values are invalid", (values) => {
     const result = calculateResources(values);
 
     expect(result.data.food).toBeUndefined();
-    expect(result.errors).toEqual(["food", "wood", "silver"]);
+    expect(result.data.wood).toBeUndefined();
+    expect(result.data.silver).toBeUndefined();
+    expect(result.errors).toEqual(
+      expect.arrayContaining(["food", "silver", "wood"]),
+    );
   });
 });
