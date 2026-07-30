@@ -36,4 +36,46 @@ describe("convertToCompressed", () => {
 
     expect(result).toBe(expected);
   });
+
+  it.each([
+    [-1],
+    [NaN],
+    [undefined],
+    ["text"],
+    [{}],
+    [true],
+    [false],
+    [Infinity],
+    [-Infinity],
+  ])("throws when rate is %p", (rate) => {
+    const resource = 0;
+    const result = () => convertToCompressed(resource, rate);
+
+    expect(result).toThrow("Rate must be a valid number and greater than 0");
+  });
+
+  it.each([
+    [-1],
+    [NaN],
+    [undefined],
+    ["text"],
+    [{}],
+    [true],
+    [false],
+    [Infinity],
+    [-Infinity],
+  ])("throws when resource is %p", (resource) => {
+    const rate = 100;
+    const result = () => convertToCompressed(resource, rate);
+
+    expect(result).toThrow("Resource must be a valid positive number");
+  });
+
+  it("throws when values out of scope", () => {
+    const resource = Number.MAX_SAFE_INTEGER;
+    const rate = 1000;
+    const result = () => convertToCompressed(resource, rate);
+
+    expect(result).toThrow("Out of scope");
+  });
 });
