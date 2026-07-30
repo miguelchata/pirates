@@ -26,15 +26,15 @@ describe("formatLargeNumber", () => {
 
 describe("convertToCompressed", () => {
   it.each([
-    [1, "1 units / 0K"],
-    [1.5, "1 units / 500K"],
-    [0.001, "0 units / 1K"],
-    [0.999, "0 units / 999K"],
-  ])("converts %i with rate 1000 as %p", (resource, expected) => {
-    const rate = 1000;
+    [1, 1, [1, 0]],
+    [15000000, 1000, [15000, 0]],
+    [2205, 100, [22, 5]],
+  ])("converts %p with rate %p as %p", (resource, rate, expected) => {
     const result = convertToCompressed(resource, rate);
 
-    expect(result).toBe(expected);
+    expect(result.compressed * rate + result.remaining).toBe(resource);
+    expect(result.compressed).toBe(expected[0]);
+    expect(result.remaining).toBe(expected[1]);
   });
 
   it.each([
@@ -47,33 +47,22 @@ describe("convertToCompressed", () => {
     [false],
     [Infinity],
     [-Infinity],
-  ])("throws when rate is %p", (rate) => {
-    const resource = 0;
-    const result = () => convertToCompressed(resource, rate);
+    [1.1],
+  ])("throws when rate is %p", (value) => {
+    const aux = 1;
+    const resourceResult = () => convertToCompressed(value, aux);
+    const rateResult = () => convertToCompressed(aux, value);
 
-    expect(result).toThrow("Rate must be a valid number and greater than 0");
+    expect(resourceResult).toThrow("Resource must be a whole positive number");
+    expect(rateResult).toThrow(
+      "Rate must be a whole number and greater than 0",
+    );
   });
 
   it.each([
-    [-1],
-    [NaN],
-    [undefined],
-    ["text"],
-    [{}],
-    [true],
-    [false],
-    [Infinity],
-    [-Infinity],
-  ])("throws when resource is %p", (resource) => {
-    const rate = 100;
-    const result = () => convertToCompressed(resource, rate);
-
-    expect(result).toThrow("Resource must be a valid positive number");
-  });
-
-  it("throws when values out of scope", () => {
-    const resource = Number.MAX_SAFE_INTEGER;
-    const rate = 1000;
+    [15000001, 1000],
+    [15000000, 1001],
+  ])("throws when values out of scope", (resource, rate) => {
     const result = () => convertToCompressed(resource, rate);
 
     expect(result).toThrow("Out of scope");

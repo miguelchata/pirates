@@ -3,17 +3,17 @@ import { convertToCompressed } from "./formatters.js";
 
 const RESOURCES = Object.freeze({
   food: {
-    quantity: 30,
+    quantity: 30000,
     price: 350,
     compressionRate: 1000,
   },
   wood: {
-    quantity: 5,
+    quantity: 5000,
     price: 350,
     compressionRate: 170,
   },
   silver: {
-    quantity: 1.25,
+    quantity: 1250,
     price: 350,
     compressionRate: 42,
   },

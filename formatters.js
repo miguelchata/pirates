@@ -1,4 +1,7 @@
 // formatters.js
+const MAX_RESOURCE_AMOUNT = 15_000_000;
+const MAX_RATE = 1000;
+
 export function formatLargeNumber(gold) {
   const goldThousand = gold % 1000;
   const goldMillion = (gold - goldThousand) / 1000;
@@ -19,24 +22,29 @@ export function formatLargeNumber(gold) {
 }
 
 export function convertToCompressed(resource, rate) {
-  // resource: 1 == 1M, rate: 1 == 1K
-  // valid inputs: resource: 0 to 500, rate: 1 to 1000
-  // guaranted oupts: to <compressed units> units / <remaing K>K
-  // out of scope: resource > 500, rate > 1000
-  if (!Number.isFinite(resource) || resource < 0) {
-    throw new TypeError("Resource must be a valid positive number");
+  // Splits resource amount into complete compressed units and the remaining resource.
+  // Accepted inputs: parameters must be positive integers within the allowed limits.
+  // Rejected inputs: non-numbers, decimals, non-positive values, or values exceeding the limits.
+  // Guaanteed outputs: compressed, remaining.
+  // Invariants: 0 <= remaining < rate, resource = compressed * rate + remaining.
+  if (
+    !Number.isFinite(resource) ||
+    !Number.isInteger(resource) ||
+    resource <= 0
+  ) {
+    throw new TypeError("Resource must be a whole positive number");
   }
 
-  if (!Number.isFinite(rate) || rate <= 0) {
-    throw new TypeError("Rate must be a valid number and greater than 0");
+  if (!Number.isFinite(rate) || !Number.isInteger(rate) || rate <= 0) {
+    throw new TypeError("Rate must be a whole number and greater than 0");
   }
 
-  if (resource > 500 || rate > 1000) {
+  if (resource > MAX_RESOURCE_AMOUNT || rate > MAX_RATE) {
     throw new TypeError("Out of scope");
   }
-  const thousand = 1000;
-  const resourceCompressed = Math.floor((resource * thousand) / rate);
-  const resourceLeft = (resource * thousand) % rate;
 
-  return `${resourceCompressed} units / ${resourceLeft}K`;
+  return {
+    compressed: Math.floor(resource / rate),
+    remaining: resource % rate,
+  };
 }
