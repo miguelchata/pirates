@@ -20,7 +20,7 @@ const RESOURCES = Object.freeze({
 });
 
 export function calculateResources(values) {
-  const data = {};
+  /*const data = {};
   const errors = [];
 
   for (const [key, value] of Object.entries(RESOURCES)) {
@@ -37,7 +37,21 @@ export function calculateResources(values) {
     }
   }
 
-  return { data, errors };
+  return { data, errors };*/
+  // Input: numbers {food, wood, silver}
+  // Output: processed {amount, gold, compress}
+
+  const data = {};
+
+  for (const [key, value] of Object.entries(values)) {
+    const resource = RESOURCES[key];
+    const amount = value * resource.quantity;
+    const gold = value * resource.price;
+
+    data[key] = { amount, gold };
+  }
+
+  return data;
 }
 
 export function isValidResourceAmount(amount) {
