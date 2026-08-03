@@ -1,7 +1,7 @@
 // calculator.js
 import { convertToCompressed } from "./formatters.js";
 
-const RESOURCES = Object.freeze({
+export const RESOURCES = Object.freeze({
   food: {
     quantity: 30000,
     price: 350,
@@ -42,16 +42,18 @@ export function calculateResources(values) {
   // Output: processed {amount, gold, compress}
 
   const data = {};
+  let totalGold = 0;
 
-  for (const [key, value] of Object.entries(values)) {
-    const resource = RESOURCES[key];
+  for (const [key, resource] of Object.entries(RESOURCES)) {
+    const value = values[key];
     const amount = value * resource.quantity;
     const gold = value * resource.price;
 
+    totalGold += gold;
     data[key] = { amount, gold };
   }
 
-  return data;
+  return { data, totalGold };
 }
 
 export function isValidResourceAmount(amount) {

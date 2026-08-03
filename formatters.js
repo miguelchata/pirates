@@ -30,7 +30,7 @@ export function convertToCompressed(resource, rate) {
   if (
     !Number.isFinite(resource) ||
     !Number.isInteger(resource) ||
-    resource <= 0
+    resource < 0
   ) {
     throw new TypeError("Resource must be a whole positive number");
   }
