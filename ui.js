@@ -194,17 +194,24 @@ function renderResults(results) {
   for (const [key, value] of Object.entries(results.data)) {
     const resourceUI = uiIds[key];
     const resource = RESOURCES[key];
-    const { compressed, remaining } = convertToCompressed(
+    const resourceCompressed = convertToCompressed(
       value.amount,
       resource.compressionRate,
     );
+    const goldCompressed = convertToCompressed(value.gold, 1000);
+    const resourceFormat = formatOutput(resourceCompressed, ' units');
+    const goldFormat = formatOutput(goldCompressed, 'M');
 
     ui[resourceUI.result].innerText =
-      `Amount: ${value.amount / 1000}M - Gold: ${formatLargeNumber(value.gold)} Compressed: ${compressed} units`;
+      `Amount: ${value.amount / 1000}M - Gold: ${goldFormat} Compressed: ${resourceFormat}`;
     totalGold += value.gold;
   }
   const compressedGold = convertToCompressed(results.totalGold, 1000);
 
   ui[uiIds.gold.result].innerText =
     `Total Gold: ${compressedGold.compressed}M - ${compressedGold.remaining}K`;
+}
+
+function formatOutput({ compressed, remaining }, unit) {
+  return `${compressed}${unit} / ${remaining}K`;
 }
