@@ -13,5 +13,10 @@ export const validatros = {
 		if (typeof value !== "string") {
 			return "Must be a valid pattern.";
 		}
+	},
+	password: (value, rule) => {
+		if (typeof value !== "string") {
+			return "Must be a valid string.";
+		}
 	}
 }
