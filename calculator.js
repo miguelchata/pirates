@@ -20,27 +20,6 @@ export const RESOURCES = Object.freeze({
 });
 
 export function calculateResources(values) {
-  /*const data = {};
-  const errors = [];
-
-  for (const [key, value] of Object.entries(RESOURCES)) {
-    const inputValue = values[key];
-
-    if (isValidResourceAmount(inputValue)) {
-      const amount = inputValue * value.quantity;
-      const gold = inputValue * value.price;
-      const compress = convertToCompressed(amount, value.compressionRate);
-
-      data[key] = { amount, gold, compress };
-    } else {
-      errors.push(key);
-    }
-  }
-
-  return { data, errors };*/
-  // Input: numbers {food, wood, silver}
-  // Output: processed {amount, gold, compress}
-
   const data = {};
   let totalGold = 0;
 
