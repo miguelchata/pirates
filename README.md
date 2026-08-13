@@ -4,3 +4,4 @@
 - To buy resources it's necessary to have gold
 - After calculate return amount of gold of the purchase
 - Inputs for three resources
+- help how resource it's necessary to level up 
