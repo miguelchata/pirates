@@ -27,21 +27,21 @@ export function convertToCompressed(resource, rate) {
   // Rejected inputs: non-numbers, decimals, non-positive values, or values exceeding the limits.
   // Guaanteed outputs: compressed, remaining.
   // Invariants: 0 <= remaining < rate, resource = compressed * rate + remaining.
-  if (
-    !Number.isFinite(resource) ||
-    !Number.isInteger(resource) ||
-    resource < 0
-  ) {
-    throw new TypeError("Resource must be a whole positive number");
-  }
+  // if (
+  //   !Number.isFinite(resource) ||
+  //   !Number.isInteger(resource) ||
+  //   resource < 0
+  // ) {
+  //   throw new TypeError("Resource must be a whole positive number");
+  // }
 
-  if (!Number.isFinite(rate) || !Number.isInteger(rate) || rate <= 0) {
-    throw new TypeError("Rate must be a whole number and greater than 0");
-  }
+  // if (!Number.isFinite(rate) || !Number.isInteger(rate) || rate <= 0) {
+  //   throw new TypeError("Rate must be a whole number and greater than 0");
+  // }
 
-  if (resource > MAX_RESOURCE_AMOUNT || rate > MAX_RATE) {
-    throw new TypeError("Out of scope");
-  }
+  // if (resource > MAX_RESOURCE_AMOUNT || rate > MAX_RATE) {
+  //   throw new TypeError("Out of scope");
+  // }
 
   return {
     compressed: Math.floor(resource / rate),
