@@ -20,15 +20,6 @@ const userInput = {
   email: "john.doe@example.com",
 };
 
-// 3. Execute validation
-// const result = validateInput(userInput, userSchema);
-
-// if (!result.isValid) {
-//   console.error("Validation failed:", result.errors);
-// } else {
-//   console.log("Clean data ready for processing:", result.sanitizedData);
-// }
-
 const uiIds = Object.freeze({
   food: {
     input: "food-input",
@@ -45,11 +36,6 @@ const uiIds = Object.freeze({
     result: "silver-result",
     error: "silver-error",
   },
-  // gold: {
-  //   input: "gold-input",
-  //   result: "gold-result",
-  //   error: "gold-error",
-  // },
 });
 
 const ui = collectUI();
