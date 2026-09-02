@@ -6,3 +6,4 @@
 - Inputs for three resources
 - Help how resource it's necessary to level up
 - Show all useful help
+- Return all you need how many resources you need
