@@ -8,4 +8,4 @@
 - Show all useful help
 - Return all you need how many resources you need
 - Show graphics and charts
-- Heroes wins
+- Heroes wins in versus
