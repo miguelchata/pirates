@@ -1,4 +1,5 @@
 # Pirates game
+This app help you calculates resources you need on the game.
 
 - Calculate resources like food, wood, and silver how much costs
 - To buy resources it's necessary to have gold
